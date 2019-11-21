@@ -7,6 +7,8 @@ from random import random
 from classes.utils.utils import *
 from classes.pso import PSO
 
+from tqdm import tqdm
+
 class Network:
 
     alpha = 0.8
@@ -25,8 +27,8 @@ class Network:
             "tanh": lambda x: np.tanh(x),
             "arctan": lambda x: np.arctan(x),
             "relu": lambda x: 0 if x<0 else x,
-            "prelu": lambda x: alpha*x if x<0 else x,
-            "elu": lambda x: alpha(np.exp(x)-1) if x<0 else x,
+            "prelu": lambda x: Network.alpha*x if x<0 else x,
+            "elu": lambda x: Network.alpha*(np.exp(x)-1) if x<0 else x,
             "softplus" : lambda x: np.log(1+np.exp(x)),
             
             "d_identity": lambda x: 1,
@@ -35,8 +37,8 @@ class Network:
             "d_tanh": lambda x: 1-(np.tanh(x))**2,
             "d_arctan": lambda x: 1/((x**2)-1),
             "d_relu": lambda x: 0 if x<0 else 1,
-            "d_prelu": lambda x: alpha if x<0 else 1,
-            "d_elu": lambda x: Network.activationFunctions["prelu"](x)+alpha if x<0 else 1,
+            "d_prelu": lambda x: Network.alpha if x<0 else 1,
+            "d_elu": lambda x: Network.activationFunctions["prelu"](x)+Network.alpha if x<0 else 1,
             "d_softplus" : lambda x: 1/(1+np.exp(-x)),
             
             }
@@ -264,11 +266,12 @@ class Network:
             if (hasattr(x, "__len__") == False):
                 x = [x]
 
-            y_pred = self.predict(x)
-            error_res += np.asscalar(self.calcError(y, y_pred[0]))
+            y_pred = self.forwardPass(np.array(x))
+            error_res += np.asscalar(self.calcError(y, y_pred))
 
         return error_res/y_test.shape[0]
 
-    def train_with_pso(self, X_train, y_train, swarm_size=100):
+    def train_with_pso(self, X_train, y_train, swarm_size=100, iter_count=10):
         pso = PSO(self, swarm_size)
-        pso.train_nn(X_train, y_train)
+        #for x, y in tqdm(zip(X_train, y_train)):
+        self.network = pso.train_nn(X_train, y_train, max_time=iter_count).network

@@ -4,7 +4,7 @@ def unknownDerivative():
     raise ValueError("?")
 
 def l1_error(y_true,y_pred):
-    return np.array(y_true - y_pred)
+    return np.array(np.abs(y_true - y_pred))
 
 def l2_error(y_true,y_pred):
     return (np.square(y_true - y_pred)).mean(axis=1)
