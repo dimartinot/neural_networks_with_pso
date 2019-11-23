@@ -1,6 +1,7 @@
 from classes.network import Network
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 
 BATCH_SIZE = 10
 
@@ -27,18 +28,21 @@ if __name__ == "__main__":
 
     p = np.random.permutation(len(X_train))
 
-    new_X_train = X_train[p]
-    new_y_train = y_train[p]
+    new_X_train = X_train[p][:10]
+    new_y_train = y_train[p][:10]
 
-    network.train_with_pso(new_X_train, np.expand_dims(new_y_train, axis=1), iter_count=100)
 
-    # for (x_batch,y_batch) in zip(splitted_X_train,splitted_y_train):
-    #     network.train_with_pso(x_batch, y_batch, swarm_size=100, iter_count=100)
+    #network.train(new_X_train, new_y_train)
+    #network.train_with_pso(new_X_train, np.expand_dims(new_y_train, axis=1), iter_count=100)
+
+    for (x_batch,y_batch) in tqdm(zip(splitted_X_train,splitted_y_train)):
+        perf = network.train_with_pso(x_batch, y_batch)
     #     print(network.network)
     #     #print("Last mean error is: {}".format(network.train_with_pso(x, y)))
     #     print("Launching test..")
     #     print(network.test(X_train, y_train))
     print(network.predict(X_train))
+    print(network.network)
     #     print("""
     #     -------------------------
     

@@ -96,7 +96,7 @@ class PSO:
             if (hasattr(x, "__len__") == False):
                 x = [x]
 
-            pred = new_net.forwardPass(np.array(x))
+            pred = np.asscalar(new_net.forwardPass(np.array(x)))
             error += self.network.calcError(y, pred)
         
         # if (is_best):
@@ -118,6 +118,7 @@ class PSO:
         iter_count = max_time
         count_similar_fitness = 5
         last_fitness = 0
+        best_perf_hist = []
         while ( count_similar_fitness > 0 and iter_count != 0):
             iter_count -=1
         #for time in tqdm(range(max_time)): #(time<10): #Best is the ideal solution or we have run out of time
@@ -174,6 +175,9 @@ class PSO:
             else:
                 count_similar_fitness = 5
                 last_fitness = tmp_last_fitness
+            
+            best_perf_hist.append(last_fitness)
+        
         print(f"Best_fitness: {last_fitness}")
 
-        return self.getNetworkFromParticule(best)
+        return self.getNetworkFromParticule(best), best_perf_hist
