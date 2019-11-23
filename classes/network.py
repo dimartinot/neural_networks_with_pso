@@ -275,9 +275,9 @@ class Network:
 
         return error_res/y_test.shape[0]
 
-    def train_with_pso(self, X_train, y_train, swarm_size=100, iter_count=10):
+    def train_with_pso(self, X_train, y_train, swarm_size=100, iter_count=10, increase_convergence_factor=False):
         pso = PSO(self, swarm_size)
         #for x, y in tqdm(zip(X_train, y_train)):
-        network, perf = pso.train_nn(X_train, y_train, max_time=iter_count)
+        network, perf = pso.train_nn(X_train, y_train, max_time=iter_count, increase_convergence_factor=increase_convergence_factor)
         self.network = network.network        
         return perf
