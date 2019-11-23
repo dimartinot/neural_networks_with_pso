@@ -102,7 +102,7 @@ class PSO:
         #     print(error)
         return error/y_train.shape[0]
 
-    def train_nn(self, X_train, y_train, max_time=10, threshold=0.001):
+    def train_nn(self, X_train, y_train, max_time=10, threshold=0.001, increase_convergence_factor=False):
         dimension = self.getParticuleFromNetwork().size
         
         for i in range(self.swarmsize):
@@ -153,7 +153,21 @@ class PSO:
                     b=random.uniform(0,self.beta)
                     c=random.uniform(0,self.gamma)
                     d=random.uniform(0,self.delta)
-                    velo.append(self.alpha*self.P["velocity"]["v{}".format(i)][dim] + 
+                    if (increase_convergence_factor):
+
+                        phi = self.beta + self.gamma + self.delta
+                        khi = 2/np.abs(2-phi-np.sqrt(phi*phi-4*phi))
+                        
+                        velo.append(
+                            khi*(
+                                self.P["velocity"]["v{}".format(i)][dim] + 
+                                b*(self.P["fittestX"]["f{}".format(i)][dim] - self.P["location"]["l{}".format(i)][dim]) +
+                                c*(self.P["informant_best"]["i{}".format(i)][dim] - self.P["location"]["l{}".format(i)][dim]) +
+                                d*(best[dim] - self.P["location"]["l{}".format(i)][dim])
+                            )
+                        )
+                    else:
+                        velo.append(self.alpha*self.P["velocity"]["v{}".format(i)][dim] + 
                                 b*(self.P["fittestX"]["f{}".format(i)][dim] - self.P["location"]["l{}".format(i)][dim]) +
                                 c*(self.P["informant_best"]["i{}".format(i)][dim] - self.P["location"]["l{}".format(i)][dim]) +
                                 d*(best[dim] - self.P["location"]["l{}".format(i)][dim]))
