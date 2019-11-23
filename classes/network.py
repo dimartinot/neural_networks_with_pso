@@ -21,29 +21,29 @@ class Network:
         "deltas": {}}
 
     activationFunctions={
-            "identity": lambda x: x,
-            "binary_step": lambda x: 0 if x<0 else 1,
+            #"identity": lambda x: x,
+            #"binary_step": lambda x: 0 if x<0 else 1,
             "logistic": lambda x: 1/(1+np.exp(-x)),
             "tanh": lambda x: np.tanh(x),
-            "arctan": lambda x: np.arctan(x),
-            "relu": lambda x: 0 if x<0 else x,
+            #"arctan": lambda x: np.arctan(x),
+            #"relu": lambda x: 0 if x<0 else x,
             "cosine": lambda x: np.cos(x),
             "gaussian": lambda x: np.exp(-(x**2)/2),
-            "prelu": lambda x: Network.alpha*x if x<0 else x,
-            "elu": lambda x: Network.alpha*(np.exp(x)-1) if x<0 else x,
-            "softplus" : lambda x: np.log(1+np.exp(x)),
+            #"prelu": lambda x: Network.alpha*x if x<0 else x,
+            #"elu": lambda x: Network.alpha*(np.exp(x)-1) if x<0 else x,
+            #"softplus" : lambda x: np.log(1+np.exp(x)),
             
-            "d_identity": lambda x: 1,
-            "d_binary_step": lambda x: 0 if x!=0 else unknownDerivative(),
+            #"d_identity": lambda x: 1,
+            #"d_binary_step": lambda x: 0 if x!=0 else unknownDerivative(),
             "d_logistic": lambda x: (1/(1+np.exp(-x)))*(1-(1/(1+np.exp(-x)))),
             "d_tanh": lambda x: 1-(np.tanh(x))**2,
-            "d_arctan": lambda x: 1/((x**2)-1),
-            "d_relu": lambda x: 0 if x<0 else 1,
+            #"d_arctan": lambda x: 1/((x**2)-1),
+            #"d_relu": lambda x: 0 if x<0 else 1,
             "d_cosine": lambda x: np.sin(x),
             "d_gaussian": lambda x: -x*np.exp(-(x**2)/2),
-            "d_prelu": lambda x: Network.alpha if x<0 else 1,
-            "d_elu": lambda x: Network.activationFunctions["prelu"](x)+Network.alpha if x<0 else 1,
-            "d_softplus" : lambda x: 1/(1+np.exp(-x)),
+            #"d_prelu": lambda x: Network.alpha if x<0 else 1,
+            #"d_elu": lambda x: Network.activationFunctions["prelu"](x)+Network.alpha if x<0 else 1,
+            #"d_softplus" : lambda x: 1/(1+np.exp(-x)),
             
             }
 
@@ -262,7 +262,7 @@ class Network:
 
             res.append(y)
         return res
-    
+
     def test(self, X_test, y_test):
         error_res = 0
         for (x,y) in zip(X_test, y_test):
@@ -271,7 +271,7 @@ class Network:
                 x = [x]
 
             y_pred = np.asscalar(self.forwardPass(np.array(x)))
-            error_res += np.asscalar(self.calcError(y, y_pred))
+            error_res += np.asscalar(self.calcError(y, [y_pred]))
 
         return error_res/y_test.shape[0]
 

@@ -5,14 +5,8 @@ import random
 from tqdm import tqdm
 
 class PSO:
-
-    numberOfInfant=20
-    alpha=0.3 # proportion of velocity to be retained
-    beta=0.2 # proportion of personal best to be retained
-    gamma=0.3 # proportion of the informants’ best to be retained
-    delta=0.2 # proportion of global best to be retained
-
-    def __init__(self, network, swarmsize):
+ 
+    def __init__(self, network, swarmsize, numberOfInfant=20, alpha=0.3, beta = 0.2, gamma = 0.3, delta = 0.2):
         super().__init__()
         self.network = network
         #dimension=2
@@ -23,7 +17,12 @@ class PSO:
         "informants": {},
         "informant_best":{}}
         self.swarmsize = swarmsize
-    
+        self.numberOfInfant = numberOfInfant # number of informant
+        self.alpha = alpha # max proportion of velocity to be retained
+        self.beta = beta # max proportion of personal best to be retained
+        self.gamma = gamma # max proportion of the informants’ best to be retained
+        self.delta = delta # max proportion of global best to be retained
+
     def val_to_act_fun(self, val):
         
         functions = self.network.activationFunctions
@@ -39,7 +38,7 @@ class PSO:
             if val >= i/len(sorted_functions) and val < (i+1)/len(sorted_functions):
                 return function
 
-        return "identity"
+        return sorted_functions[0]
 
     def getNetworkFromParticule(self, particuleValue):
         compteur = 0
@@ -97,7 +96,7 @@ class PSO:
                 x = [x]
 
             pred = np.asscalar(new_net.forwardPass(np.array(x)))
-            error += self.network.calcError(y, pred)
+            error += self.network.calcError(y, [pred])
         
         # if (is_best):
         #     print(error)
