@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 class PSO:
  
-    def __init__(self, network, swarmsize, numberOfInfant=20, alpha=0.3, beta = 0.2, gamma = 0.3, delta = 0.2):
+    def __init__(self, network, swarmsize, numberOfInfant=20, alpha=0.6, beta = 1.3, gamma = 1.3, delta = 1.4):
         super().__init__()
         self.network = network
         #dimension=2
@@ -115,7 +115,7 @@ class PSO:
             self.P["fittestX"]["f{}".format(i)]=self.P["location"]["l{}".format(i)]
                 
         iter_count = max_time
-        count_similar_fitness = 5
+        count_similar_fitness = 50
         last_fitness = 0
         best_perf_hist = []
         while ( count_similar_fitness > 0 and iter_count != 0):
@@ -184,9 +184,9 @@ class PSO:
             #print(self.P)
             tmp_last_fitness = self.assessFitness(best, y_train, X_train, True)
             if (last_fitness == tmp_last_fitness):
-                count_similar_fitness -=0
+                count_similar_fitness -= 0
             else:
-                count_similar_fitness = 5
+                count_similar_fitness = 50
                 last_fitness = tmp_last_fitness
             
             best_perf_hist.append(last_fitness)
